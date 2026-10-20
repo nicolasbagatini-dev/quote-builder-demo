@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Demonstração: sistema de cotação | Nícolas Bagatini</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+<style>
+:root{
+  --azul:#008EFF;--azul-claro:#F0F5FD;--azul-dark:#0070cc;--bg:#F7F7F7;--card:#fff;
+  --titulo:#383838;--texto:#646464;--label:#808080;--muted:#A2A2A2;--borda:#D4D4D4;
+  --step:#EAEAEA;--vermelho:#FF4848;--verde:#22C55E;
+  --r-card:20px;--r-input:5px;--r-pill:55px;--r-info:10px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'Inter',system-ui,sans-serif;color:var(--texto);line-height:1.45;font-size:15px}
+button,input,select,textarea{font:inherit;color:inherit}
+iconify-icon{display:inline-block;vertical-align:-.15em}
+
+.demo-bar{background:var(--titulo);color:#fff;font-size:13px;padding:10px 20px;display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center}
+.demo-bar a{color:#fff;opacity:.75}
+.topo{background:#fff;border-bottom:1px solid var(--borda)}
+.topo-in{max-width:1110px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.marca{display:flex;align-items:center;gap:10px;font-weight:700;color:var(--titulo)}
+.marca span.logo{width:34px;height:34px;border-radius:10px;background:var(--azul);color:#fff;display:grid;place-items:center;font-size:18px}
+.usuario{font-size:13px;color:var(--label);display:flex;align-items:center;gap:6px}
+
+.wrap{max-width:1110px;margin:0 auto;padding:32px 24px 80px}
+h1{font-weight:900;color:#000;font-size:clamp(26px,4vw,34px);margin:0 0 6px;letter-spacing:-.02em}
+.sub{margin:0 0 28px;color:var(--label)}
+
+.etapas{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.etapa{flex:1;min-width:130px;background:var(--step);border-radius:var(--r-pill);padding:10px 16px;font-size:13px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:8px;border:0;cursor:pointer;text-align:left}
+.etapa b{width:22px;height:22px;border-radius:50%;background:#fff;display:grid;place-items:center;font-size:12px;flex:none}
+.etapa.ativa{background:var(--azul);color:#fff}
+.etapa.ativa b{color:var(--azul)}
+.etapa.feita{background:var(--azul-claro);color:var(--azul)}
+
+.grade{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px;align-items:start}
+.card{background:var(--card);border-radius:var(--r-card);padding:28px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card h2{margin:0 0 4px;color:var(--titulo);font-size:20px}
+.card .dica{margin:0 0 22px;font-size:14px;color:var(--label)}
+label.l{display:block;font-size:13px;font-weight:600;color:var(--label);margin:0 0 6px}
+.campo{margin-bottom:18px}
+input.i,select.i,textarea.i{width:100%;border:1px solid var(--borda);border-radius:var(--r-input);padding:11px 12px;background:#fff;outline:none;transition:border-color .15s}
+input.i:focus,select.i:focus,textarea.i:focus{border-color:var(--azul)}
+.linha{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px}
+
+.produtos{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:22px}
+.prod{border:1.5px solid var(--borda);border-radius:14px;padding:14px;background:#fff;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,background .15s}
+.prod:hover{border-color:var(--azul)}
+.prod.sel{border-color:var(--azul);background:var(--azul-claro)}
+.prod iconify-icon{font-size:26px;color:var(--azul)}
+.prod strong{color:var(--titulo);font-size:14px}
+.prod small{color:var(--label);font-size:12px}
+
+.faixa-box{border:1px dashed var(--borda);border-radius:var(--r-info);padding:14px;margin-bottom:12px;position:relative}
+.faixa-box .rm{position:absolute;top:8px;right:8px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:18px}
+.faixa-info{font-size:13px;margin-top:4px;color:var(--azul);font-weight:600}
+.faixa-info.erro{color:var(--vermelho)}
+.btn-link{border:0;background:none;color:var(--azul);font-weight:600;cursor:pointer;padding:6px 0;display:inline-flex;gap:6px;align-items:center}
+
+.opcoes{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:20px}
+.op{border:1.5px solid var(--borda);border-radius:14px;padding:14px;display:flex;gap:10px;cursor:pointer;background:#fff}
+.op:has(input:checked){border-color:var(--azul);background:var(--azul-claro)}
+.op input{accent-color:var(--azul);margin-top:3px}
+.op strong{display:block;color:var(--titulo);font-size:14px}
+.op small{color:var(--label);font-size:12px}
+
+.acoes{display:flex;justify-content:space-between;gap:12px;margin-top:26px;flex-wrap:wrap}
+.btn{border:0;border-radius:var(--r-pill);padding:13px 26px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+.btn.pri{background:var(--azul);color:#fff}
+.btn.pri:hover{background:var(--azul-dark)}
+.btn.sec{background:var(--step);color:var(--titulo)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+
+.resumo{position:sticky;top:20px}
+.resumo h3{margin:0 0 14px;color:var(--titulo);font-size:16px}
+.rs-vazio{color:var(--muted);font-size:14px}
+.rs-faixa{border-top:1px solid var(--step);padding:12px 0;font-size:13px}
+.rs-faixa:first-of-type{border-top:0}
+.rs-row{display:flex;justify-content:space-between;gap:10px;padding:2px 0}
+.rs-row span:last-child{color:var(--titulo);font-weight:600;text-align:right}
+.rs-row.int span{color:var(--muted)!important;font-weight:400!important}
+.rs-total{border-top:2px solid var(--titulo);margin-top:8px;padding-top:12px;display:flex;justify-content:space-between;align-items:baseline}
+.rs-total strong{font-size:22px;color:#000;font-weight:900}
+.nota{font-size:12px;color:var(--muted);margin-top:10px;display:flex;gap:6px}
+
+/* cotação emitida */
+#doc{display:none}
+.doc{background:#fff;border-radius:var(--r-card);padding:40px;max-width:860px;margin:0 auto;color:var(--titulo)}
+.doc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:2px solid var(--titulo);padding-bottom:18px;margin-bottom:22px;flex-wrap:wrap}
+.doc h2{margin:0;font-size:26px;font-weight:900}
+.doc .emit{font-size:13px;color:var(--label)}
+.doc h4{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--label);margin:24px 0 10px}
+.dados{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px 24px;font-size:14px}
+.dados div span{display:block;font-size:12px;color:var(--label)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:12px;color:var(--label);font-weight:600;border-bottom:1px solid var(--borda);padding:8px 6px}
+td{padding:9px 6px;border-bottom:1px solid var(--step)}
+td.n,th.n{text-align:right}
+.doc-total{display:flex;justify-content:space-between;align-items:baseline;background:var(--azul-claro);border-radius:var(--r-info);padding:16px 18px;margin-top:18px}
+.doc-total strong{font-size:24px;font-weight:900;color:#000}
+.doc-acoes{max-width:860px;margin:0 auto 18px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.doc-rodape{font-size:12px;color:var(--muted);margin-top:28px;border-top:1px solid var(--step);padding-top:14px}
+
+/* abas e lista de cotações */
+.abas{display:flex;gap:4px;background:var(--bg);border-radius:var(--r-pill);padding:4px}
+.aba{border:0;background:none;border-radius:var(--r-pill);padding:8px 16px;font-size:14px;font-weight:600;color:var(--label);cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.aba.ativa{background:#fff;color:var(--azul);box-shadow:0 1px 3px rgba(0,0,0,.08)}
+#lista{display:none}
+.filtros{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}
+.filtros .i{width:auto;flex:1;min-width:160px}
+.filtros .busca{flex:2;min-width:220px}
+.tabela-wrap{overflow-x:auto}
+.tabela-wrap table{min-width:760px}
+.tabela-wrap tr:hover td{background:var(--azul-claro)}
+.status{display:inline-block;border-radius:var(--r-pill);padding:3px 10px;font-size:12px;font-weight:600}
+.status.aberta{background:var(--azul-claro);color:var(--azul)}
+.status.rascunho{background:var(--step);color:var(--label)}
+.status.nova{background:#DCFCE7;color:#15803d}
+.ver{border:0;background:none;color:var(--azul);cursor:pointer;font-size:18px;padding:4px}
+.contagem{font-size:13px;color:var(--label);margin:12px 0 0}
+
+@media (max-width:900px){.grade{grid-template-columns:1fr}.resumo{position:static}}
+@media (max-width:560px){.card,.doc{padding:20px}.etapa{min-width:0;flex:1 1 45%}}
+@media print{
+  @page{size:A4;margin:14mm}
+  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .demo-bar,.topo,#app,.doc-acoes{display:none!important}
+  #doc{display:block!important}
+  .wrap{padding:0}
+  .doc{padding:0;border-radius:0}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">
+  <iconify-icon icon="ph:flask"></iconify-icon>
+  Demonstração com dados fictícios. Recriada a partir de um sistema de cotação em produção.
+  <a href="https://nicolasbagatini.dev/">nicolasbagatini.dev</a>
+</div>
+
+<header class="topo"><div class="topo-in">
+  <div class="marca"><span class="logo"><iconify-icon icon="ph:factory"></iconify-icon></span>Indústria Exemplo · Cotações</div>
+  <nav class="abas">
+    <button class="aba ativa" data-aba="app"><iconify-icon icon="ph:plus"></iconify-icon>Nova cotação</button>
+    <button class="aba" data-aba="lista"><iconify-icon icon="ph:list-bullets"></iconify-icon>Cotações</button>
+  </nav>
+  <div class="usuario"><iconify-icon icon="ph:user-circle"></iconify-icon>Ana Souza (admin)</div>
+</div></header>
+
+<main class="wrap">
+<div id="app">
+  <h1>Nova cotação</h1>
+  <p class="sub">Produto, medida e quantidade entram. A cotação sai calculada pela regra de preço da fábrica.</p>
+
+  <nav class="etapas" id="etapas"></nav>
+
+  <div class="grade">
+    <section class="card" id="passo"></section>
+    <aside class="card resumo" id="resumo"></aside>
+  </div>
+</div>
+
+<div id="lista">
+  <h1>Todas as cotações</h1>
+  <p class="sub">Cotações de todos os vendedores. As que você emitir nesta demonstração aparecem no topo.</p>
+  <div class="card">
+    <div class="filtros">
+      <input class="i busca" id="f-busca" placeholder="Buscar por número, empresa ou contato">
+      <select class="i" id="f-status"><option value="">Todos os status</option><option value="nova">Emitidas agora</option><option value="aberta">Abertas</option><option value="rascunho">Rascunhos</option></select>
+      <select class="i" id="f-ordem"><option value="recentes">Mais recentes</option><option value="valor">Maior valor</option><option value="antigas">Mais antigas</option></select>
+    </div>
+    <div class="tabela-wrap"><table>
+      <thead><tr><th>Número</th><th>Empresa</th><th>Contato</th><th>Vendedor</th><th class="n">Valor total</th><th>Data</th><th>Status</th><th></th></tr></thead>
+      <tbody id="linhas"></tbody>
+    </table></div>
+    <p class="contagem" id="contagem"></p>
+  </div>
+</div>
+
+<div id="doc"></div>
+</main>
+
+<script>
+/* ── Dados fictícios ─────────────────────────────────────────────── */
+const PRODUTOS = [
+  {id:'fita', nome:'Fita de cetim personalizada', icone:'ph:ruler', base:'metro', minimo:50,
+   faixas:[[50,200,3.20],[201,500,2.70],[501,1500,2.20],[1501,99999,1.85]],
+   comps:['corte','dobra','fecho-velcro','fecho-botao','acs-embalagem']},
+  {id:'etiqueta', nome:'Etiqueta tecida', icone:'ph:tag', base:'unidade', minimo:500,
+   faixas:[[500,1000,0.42],[1001,3000,0.34],[3001,10000,0.27],[10001,999999,0.22]],
+   comps:['corte','dobra','acs-adesivo','acs-embalagem']},
+  {id:'cracha', nome:'Crachá em PVC', icone:'ph:identification-card', base:'unidade', minimo:20,
+   faixas:[[20,100,9.80],[101,300,8.10],[301,1000,6.90],[1001,99999,5.90]],
+   comps:['laminacao','furo','acs-cordao','acs-presilha','acs-embalagem']},
+  {id:'cordao', nome:'Cordão para crachá', icone:'ph:link-simple', base:'metro', minimo:30,
+   faixas:[[30,150,2.90],[151,600,2.40],[601,99999,1.95]],
+   comps:['fecho-mosquetao','fecho-jacare','acs-embalagem']},
+  {id:'tag', nome:'Tag de papel', icone:'ph:receipt', base:'unidade', minimo:200,
+   faixas:[[200,1000,0.58],[1001,5000,0.44],[5001,99999,0.36]],
+   comps:['laminacao','furo','acs-ilhos','acs-barbante']}
+];
+/* custo e margem: valor final = custo × (1 + margem) */
+const COMPS = {
+  'corte':{tipo:'acab',nome:'Corte a quente',custo:.03,margem:60,min:0},
+  'dobra':{tipo:'acab',nome:'Dobra central',custo:.04,margem:60,min:0},
+  'laminacao':{tipo:'acab',nome:'Laminação fosca',custo:.35,margem:50,min:0},
+  'furo':{tipo:'acab',nome:'Furo para cordão',custo:.05,margem:80,min:0},
+  'fecho-velcro':{tipo:'fecho',nome:'Velcro',custo:.22,margem:50},
+  'fecho-botao':{tipo:'fecho',nome:'Botão de pressão',custo:.18,margem:50},
+  'fecho-mosquetao':{tipo:'fecho',nome:'Mosquetão metálico',custo:.65,margem:45},
+  'fecho-jacare':{tipo:'fecho',nome:'Jacaré de pressão',custo:.40,margem:45},
+  'acs-embalagem':{tipo:'acs',nome:'Embalagem individual',custo:.08,margem:70,min:100},
+  'acs-adesivo':{tipo:'acs',nome:'Verso adesivo',custo:.06,margem:60,min:500},
+  'acs-cordao':{tipo:'acs',nome:'Cordão liso incluso',custo:1.10,margem:40,min:20},
+  'acs-presilha':{tipo:'acs',nome:'Presilha de acrílico',custo:.55,margem:50,min:20},
+  'acs-ilhos':{tipo:'acs',nome:'Ilhós metálico',custo:.09,margem:60,min:200},
+  'acs-barbante':{tipo:'acs',nome:'Barbante encerado',custo:.07,margem:60,min:200}
+};
+const FATURAMENTO = [{dias:0,nome:'À vista',perc:0},{dias:28,nome:'28 DDL',perc:2.5},{dias:56,nome:'28/56 DDL',perc:4},{dias:84,nome:'28/56/84 DDL',perc:6}];
+
+/* ── Estado ──────────────────────────────────────────────────────── */
+const S = {
+  passo:0, produto:null, linhas:[{qtd:'',comp:''}], acab:[], fecho:'', acs:[],
+  fat:28, pagamento:'Boleto', bv:5, descTipo:'%', desc:0, acresTipo:'%', acres:0,
+  frete:'', mostraFrete:true, prazo:'15 dias úteis',
+  cliente:'Comercial Modelo Ltda', contato:'Carlos Lima', email:'compras@exemplo.com.br', tel:'(51) 99999-0000', doc:'00.000.000/0001-00', obs:''
+};
+const ETAPAS = ['Produto','Acabamento','Acessórios','Frete e valores','Revisão'];
+
+const brl = v => v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const num = v => parseFloat(String(v).replace(',','.')) || 0;
+const $ = s => document.querySelector(s);
+const valorComp = id => COMPS[id].custo * (1 + COMPS[id].margem/100);
+const prod = () => PRODUTOS.find(p => p.id === S.produto);
+const fatPerc = () => (FATURAMENTO.find(f => f.dias === +S.fat) || FATURAMENTO[0]).perc;
+
+/* ── Regra de cálculo ────────────────────────────────────────────── */
+function calcularFaixa(l){
+  const p = prod(); if(!p) return null;
+  const qtd = num(l.qtd); if(qtd <= 0) return null;
+  const comp = p.base === 'metro' ? num(l.comp) : 0;
+  if(p.base === 'metro' && comp <= 0) return {qtd, erro:'Informe o comprimento'};
+  const medida = p.base === 'metro' ? qtd * comp / 100 : qtd;
+  if(medida < p.minimo) return {qtd, erro:`Pedido mínimo: ${p.minimo} ${p.base === 'metro' ? 'm' : 'un'}`};
+  const fx = p.faixas.find(([a,b]) => medida >= a && medida <= b) || p.faixas[p.faixas.length-1];
+  const vBase = fx[2];
+  const fator = p.base === 'metro' ? comp/100 : 1;
+  const comps = [...S.acab, ...(S.fecho ? [S.fecho] : []), ...S.acs.filter(id => qtd >= (COMPS[id].min||0))];
+  const vComps = comps.reduce((s,id) => s + valorComp(id), 0);
+  const vUnit = vBase * fator + vComps;
+  const vTotal = vUnit * qtd;
+  const desc = S.descTipo === '%' ? vTotal * num(S.desc)/100 : num(S.desc) * qtd;
+  const acres = S.acresTipo === '%' ? vTotal * num(S.acres)/100 : num(S.acres) * qtd;
+  const ajustada = vTotal - desc + acres;
+  const total = ajustada * (1 + (fatPerc() + num(S.bv))/100);
+  return {qtd, comp, medida, faixa:fx, vBase, vComps, vUnit, vTotal, desc, acres, total, unitCliente: total/qtd};
+}
+const faixasOk = () => S.linhas.map(calcularFaixa).filter(f => f && !f.erro);
+const totalGeral = () => { const f = faixasOk(); return f.length === 1 ? f[0].total + num(S.frete) : null; };
+
+/* ── Telas ───────────────────────────────────────────────────────── */
+function renderEtapas(){
+  $('#etapas').innerHTML = ETAPAS.map((e,i) =>
+    `<button class="etapa ${i===S.passo?'ativa':i<S.passo?'feita':''}" data-ir="${i}" ${i>S.passo && !podeAvancar(i-1)?'disabled':''}>
+      <b>${i<S.passo?'<iconify-icon icon="ph:check-bold"></iconify-icon>':i+1}</b>${e}</button>`).join('');
+}
+function podeAvancar(i){ if(i <= 0) return !!S.produto && faixasOk().length > 0; return podeAvancar(0); }
+
+function compsDoTipo(tipo){ return (prod()?.comps || []).filter(id => COMPS[id].tipo === tipo); }
+function opcao(id, nome, grupo, checked){
+  const c = COMPS[id]; const v = valorComp(id);
+  const unid = prod()?.base === 'metro' ? 'por peça' : 'por unidade';
+  return `<label class="op"><input type="checkbox" data-grupo="${grupo}" value="${id}" ${checked?'checked':''}>
+    <span><strong>${nome}</strong><small>+ ${brl(v)} ${unid}${c.min?` · mín. ${c.min} un`:''}</small></span></label>`;
+}
+
+function infoFaixa(l){
+  const p = prod(), f = calcularFaixa(l);
+  if(f?.erro) return `<div class="faixa-info erro">${f.erro}</div>`;
+  if(!f) return '';
+  return `<div class="faixa-info">${p.base==='metro'?`M. total: ${f.medida.toLocaleString('pt-BR')} m · `:''}Faixa ${f.faixa[0].toLocaleString('pt-BR')} a ${f.faixa[1]>=99999?'mais':f.faixa[1].toLocaleString('pt-BR')} · base ${brl(f.vBase)}/${p.base==='metro'?'m':'un'}</div>`;
+}
+
+function renderPasso(){
+  const p = prod(); let h = '';
+  if(S.passo === 0){
+    h = `<h2>Produto</h2><p class="dica">Escolha o produto e informe as quantidades. Mais de uma quantidade vira um comparativo para o cliente.</p>
+      <div class="produtos">${PRODUTOS.map(x => `<button class="prod ${x.id===S.produto?'sel':''}" data-prod="${x.id}">
+        <iconify-icon icon="${x.icone}"></iconify-icon><strong>${x.nome}</strong>
+        <small>Preço por ${x.base} · mín. ${x.minimo} ${x.base==='metro'?'m':'un'}</small></button>`).join('')}</div>`;
+    if(p){
+      h += S.linhas.map((l,i) => { const info = `<div data-info="${i}">${infoFaixa(l)}</div>`;
+        return `<div class="faixa-box">${S.linhas.length>1?`<button class="rm" data-rm="${i}" aria-label="Remover"><iconify-icon icon="ph:x"></iconify-icon></button>`:''}
+          <div class="linha"><div><label class="l">Quantidade (unidades)</label><input class="i" type="number" min="1" inputmode="numeric" data-linha="${i}" data-k="qtd" value="${l.qtd}" placeholder="Ex.: 1000"></div>
+          ${p.base==='metro'?`<div><label class="l">Comprimento (cm)</label><input class="i" type="number" min="1" inputmode="decimal" data-linha="${i}" data-k="comp" value="${l.comp}" placeholder="Ex.: 90"></div>`:''}</div>
+          ${info}</div>`; }).join('');
+      if(S.linhas.length < 3) h += `<button class="btn-link" id="mais"><iconify-icon icon="ph:plus-circle"></iconify-icon>inserir mais quantidades do mesmo produto</button>`;
+    }
+  }
+  if(S.passo === 1){
+    const fechos = compsDoTipo('fecho');
+    h = `<h2>Acabamento</h2><p class="dica">Cada acabamento soma ao valor unitário. O preço já inclui a margem definida no cadastro.</p>
+      <div class="opcoes">${compsDoTipo('acab').map(id => opcao(id, COMPS[id].nome, 'acab', S.acab.includes(id))).join('') || '<p class="rs-vazio">Sem acabamentos para este produto.</p>'}</div>
+      ${fechos.length ? `<div class="campo"><label class="l">Fechamento</label><select class="i" id="fecho"><option value="">Sem fechamento</option>
+        ${fechos.map(id => `<option value="${id}" ${S.fecho===id?'selected':''}>${COMPS[id].nome} (+ ${brl(valorComp(id))})</option>`).join('')}</select></div>` : ''}`;
+  }
+  if(S.passo === 2){
+    h = `<h2>Acessórios e extras</h2><p class="dica">Alguns acessórios só entram a partir de uma quantidade mínima.</p>
+      <div class="opcoes">${compsDoTipo('acs').map(id => opcao(id, COMPS[id].nome, 'acs', S.acs.includes(id))).join('')}</div>`;
+  }
+  if(S.passo === 3){
+    h = `<h2>Frete e valores</h2><p class="dica">Os campos com <iconify-icon icon="ph:eye-slash"></iconify-icon> são internos: entram no cálculo, mas não aparecem para o cliente.</p>
+      <div class="linha">
+        <div class="campo"><label class="l">Prazo de faturamento</label><select class="i" data-s="fat">${FATURAMENTO.map(f => `<option value="${f.dias}" ${+S.fat===f.dias?'selected':''}>${f.nome}${f.perc?` (+${String(f.perc).replace('.',',')}%)`:''}</option>`).join('')}</select></div>
+        <div class="campo"><label class="l">Forma de pagamento</label><input class="i" data-s="pagamento" value="${S.pagamento}"></div>
+      </div>
+      <div class="linha">
+        <div class="campo"><label class="l"><iconify-icon icon="ph:eye-slash"></iconify-icon> Comissão do vendedor (%)</label><input class="i" type="number" min="0" step="0.5" data-s="bv" value="${S.bv}"></div>
+        <div class="campo"><label class="l"><iconify-icon icon="ph:eye-slash"></iconify-icon> Desconto</label><div style="display:flex;gap:6px"><select class="i" style="width:72px" data-s="descTipo"><option ${S.descTipo==='%'?'selected':''}>%</option><option ${S.descTipo==='R$'?'selected':''}>R$</option></select><input class="i" type="number" min="0" step="0.01" data-s="desc" value="${S.desc}"></div></div>
+        <div class="campo"><label class="l"><iconify-icon icon="ph:eye-slash"></iconify-icon> Acréscimo</label><div style="display:flex;gap:6px"><select class="i" style="width:72px" data-s="acresTipo"><option ${S.acresTipo==='%'?'selected':''}>%</option><option ${S.acresTipo==='R$'?'selected':''}>R$</option></select><input class="i" type="number" min="0" step="0.01" data-s="acres" value="${S.acres}"></div></div>
+      </div>
+      <div class="linha">
+        <div class="campo"><label class="l">Frete (R$)</label><input class="i" type="number" min="0" step="0.01" data-s="frete" value="${S.frete}" placeholder="0,00">
+          <label style="font-size:13px;display:flex;gap:6px;margin-top:8px;align-items:center"><input type="checkbox" data-s="mostraFrete" ${S.mostraFrete?'checked':''} style="accent-color:var(--azul)">mostrar frete ao cliente</label></div>
+        <div class="campo"><label class="l">Prazo de produção</label><input class="i" data-s="prazo" value="${S.prazo}"></div>
+      </div>`;
+  }
+  if(S.passo === 4){
+    h = `<h2>Revisão</h2><p class="dica">Dados do cliente. Na versão real, a empresa é buscada no CRM enquanto você digita.</p>
+      <div class="campo"><label class="l">Empresa / razão social</label><input class="i" data-s="cliente" value="${S.cliente}"></div>
+      <div class="linha">
+        <div class="campo"><label class="l">Contato</label><input class="i" data-s="contato" value="${S.contato}"></div>
+        <div class="campo"><label class="l">E-mail</label><input class="i" type="email" data-s="email" value="${S.email}"></div>
+      </div>
+      <div class="linha">
+        <div class="campo"><label class="l">Telefone</label><input class="i" data-s="tel" value="${S.tel}"></div>
+        <div class="campo"><label class="l">CNPJ / CPF</label><input class="i" data-s="doc" value="${S.doc}"></div>
+      </div>
+      <div class="campo"><label class="l">Observações</label><textarea class="i" rows="3" data-s="obs" placeholder="Aparece na cotação do cliente">${S.obs}</textarea></div>`;
+  }
+  const ultimo = S.passo === ETAPAS.length - 1;
+  h += `<div class="acoes">
+    ${S.passo>0?`<button class="btn sec" id="voltar"><iconify-icon icon="ph:arrow-left"></iconify-icon>Voltar</button>`:'<span></span>'}
+    <button class="btn pri" id="avancar" ${podeAvancar(S.passo)?'':'disabled'}>${ultimo?'Salvar e emitir cotação<iconify-icon icon="ph:file-text"></iconify-icon>':`Próximo: ${ETAPAS[S.passo+1]}<iconify-icon icon="ph:arrow-right"></iconify-icon>`}</button></div>`;
+  $('#passo').innerHTML = h;
+}
+
+function renderResumo(){
+  const p = prod();
+  let h = `<h3>Resumo da cotação</h3>`;
+  const fs = faixasOk();
+  if(!p || !fs.length){ $('#resumo').innerHTML = h + `<p class="rs-vazio">Escolha um produto e a quantidade para ver o cálculo.</p>`; return; }
+  h += `<div style="font-weight:700;color:var(--titulo);margin-bottom:6px">${p.nome}</div>`;
+  fs.forEach(f => {
+    h += `<div class="rs-faixa">
+      <div class="rs-row"><span>Quantidade</span><span>${f.qtd.toLocaleString('pt-BR')} un${p.base==='metro'?` × ${f.comp} cm`:''}</span></div>
+      <div class="rs-row"><span>Base da faixa</span><span>${brl(f.vBase * (p.base==='metro'?f.comp/100:1))}</span></div>
+      ${f.vComps?`<div class="rs-row"><span>Componentes</span><span>+ ${brl(f.vComps)}</span></div>`:''}
+      ${f.desc?`<div class="rs-row int"><span>Desconto</span><span>- ${brl(f.desc)}</span></div>`:''}
+      ${f.acres?`<div class="rs-row int"><span>Acréscimo</span><span>+ ${brl(f.acres)}</span></div>`:''}
+      <div class="rs-row int"><span>Faturamento + comissão</span><span>+ ${String(fatPerc()+num(S.bv)).replace('.',',')}%</span></div>
+      <div class="rs-row"><span>Unitário ao cliente</span><span>${brl(f.unitCliente)}</span></div>
+      <div class="rs-row"><span>Total</span><span>${brl(f.total)}</span></div></div>`;
+  });
+  if(num(S.frete)) h += `<div class="rs-row"><span>Frete</span><span>${brl(num(S.frete))}</span></div>`;
+  const t = totalGeral();
+  h += t !== null ? `<div class="rs-total"><span>Total geral</span><strong>${brl(t)}</strong></div>`
+                  : `<p class="nota"><iconify-icon icon="ph:info"></iconify-icon>Comparativo: o cliente escolhe uma das quantidades.</p>`;
+  h += `<p class="nota"><iconify-icon icon="ph:eye-slash"></iconify-icon>Linhas em cinza são internas e não aparecem para o cliente.</p>`;
+  $('#resumo').innerHTML = h;
+}
+
+function render(){ renderEtapas(); renderPasso(); renderResumo(); }
+
+/* ── Cotação emitida ─────────────────────────────────────────────── */
+const CHAVE = 'demo-cotacoes';
+const salvas = () => { try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch(_) { return []; } };
+
+/* emitir: congela o estado atual numa cotação e guarda no navegador */
+function emitir(){
+  const p = prod();
+  const proximo = 128 + salvas().length + 1;
+  const c = {
+    n: 'COT-' + String(proximo).padStart(6,'0'), data: new Date().toISOString().slice(0,10), status:'nova', vendedor:'Ana Souza',
+    p: {nome:p.nome, base:p.base},
+    fs: faixasOk().map(f => ({qtd:f.qtd, comp:f.comp, unitCliente:f.unitCliente, total:f.total})),
+    t: totalGeral(), fat: FATURAMENTO.find(f => f.dias === +S.fat).nome,
+    comps: [...S.acab, ...(S.fecho?[S.fecho]:[]), ...S.acs].map(id => COMPS[id].nome),
+    S: {cliente:S.cliente, contato:S.contato, email:S.email, tel:S.tel, doc:S.doc, prazo:S.prazo, pagamento:S.pagamento, obs:S.obs, frete:S.frete, mostraFrete:S.mostraFrete}
+  };
+  localStorage.setItem(CHAVE, JSON.stringify([c, ...salvas()]));
+  renderDoc(c, 'app');
+}
+
+/* histórico fictício */
+const SEMENTE = (() => {
+  const base = [
+    ['Calçados Horizonte Ltda','Marina Alves','Ana Souza','etiqueta',[[3000,0,0.41]],'2026-10-13','aberta'],
+    ['Eventos Prisma','Rafael Costa','Bruno Lima','cracha',[[150,0,10.42],[300,0,9.06]],'2026-10-12','aberta'],
+    ['Confecções Aurora','Juliana Reis','Ana Souza','fita',[[2000,60,1.69]],'2026-10-10','aberta'],
+    ['Metalúrgica Vale Sul','Pedro Martins','Bruno Lima','tag',[[5000,0,0.55]],'2026-10-09','rascunho'],
+    ['Hospital Santa Clara','Fernanda Dias','Ana Souza','cracha',[[800,0,8.21]],'2026-10-08','aberta'],
+    ['Moda Raiz','Lucas Pereira','Carla Nunes','etiqueta',[[10000,0,0.33],[20000,0,0.28]],'2026-10-06','aberta'],
+    ['Congresso Sul Tech','Beatriz Rocha','Carla Nunes','cordao',[[500,90,2.71]],'2026-10-03','aberta'],
+    ['Padaria Trigo Fino','André Souza','Bruno Lima','tag',[[1500,0,0.63]],'2026-10-01','rascunho'],
+    ['Escola Novo Saber','Camila Torres','Ana Souza','cracha',[[60,0,12.30]],'2026-09-29','aberta'],
+    ['Têxtil Serra Verde','Gustavo Melo','Carla Nunes','fita',[[5000,45,1.12]],'2026-09-25','aberta'],
+    ['Feira do Couro','Patrícia Lopes','Bruno Lima','cordao',[[1200,90,2.18]],'2026-09-22','aberta'],
+    ['Loja Ponto Fino','Diego Ramos','Ana Souza','etiqueta',[[1000,0,0.47]],'2026-09-18','rascunho']
+  ];
+  return base.map(([cliente,contato,vend,pid,fx,data,status],i) => {
+    const p = PRODUTOS.find(x => x.id === pid);
+    const fs = fx.map(([qtd,comp,u]) => ({qtd, comp, unitCliente:u, total:u*qtd}));
+    return {n:'COT-' + String(128 - i).padStart(6,'0'), data, status, vendedor:vend, p:{nome:p.nome, base:p.base}, fs,
+      t: fs.length === 1 ? fs[0].total : null, fat:'28 DDL', comps:[],
+      S:{cliente, contato, email:'compras@exemplo.com.br', tel:'(51) 99999-0000', doc:'00.000.000/0001-00', prazo:'15 dias úteis', pagamento:'Boleto', obs:'', frete:'', mostraFrete:true}};
+  });
+})();
+const todas = () => [...salvas(), ...SEMENTE];
+
+function renderLista(){
+  const busca = $('#f-busca').value.toLowerCase().trim(), st = $('#f-status').value, ordem = $('#f-ordem').value;
+  const valor = c => c.t !== null ? c.t : Math.min(...c.fs.map(f => f.total));
+  let ls = todas().filter(c => (!st || c.status === st) &&
+    (!busca || [c.n, c.S.cliente, c.S.contato].join(' ').toLowerCase().includes(busca)));
+  if(ordem === 'valor') ls.sort((a,b) => valor(b) - valor(a));
+  if(ordem === 'antigas') ls.sort((a,b) => a.data.localeCompare(b.data));
+  if(ordem === 'recentes') ls.sort((a,b) => b.data.localeCompare(a.data) || b.n.localeCompare(a.n));
+  const rotulo = {nova:'Emitida agora', aberta:'Aberta', rascunho:'Rascunho'};
+  $('#linhas').innerHTML = ls.map(c => `<tr>
+    <td><strong style="color:var(--titulo)">${c.n}</strong></td><td>${c.S.cliente}</td><td>${c.S.contato}</td><td>${c.vendedor}</td>
+    <td class="n">${c.t !== null ? brl(c.t) : `a partir de ${brl(valor(c))}`}</td>
+    <td>${c.data.split('-').reverse().join('/')}</td><td><span class="status ${c.status}">${rotulo[c.status]}</span></td>
+    <td class="n"><button class="ver" data-ver="${c.n}" aria-label="Ver cotação"><iconify-icon icon="ph:eye"></iconify-icon></button></td></tr>`).join('')
+    || `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">Nenhuma cotação encontrada.</td></tr>`;
+  $('#contagem').textContent = `${ls.length} cotaç${ls.length === 1 ? 'ão' : 'ões'}`;
+}
+
+function mostrar(v){
+  ['app','lista','doc'].forEach(id => $('#'+id).style.display = id === v ? 'block' : 'none');
+  document.querySelectorAll('.aba').forEach(a => a.classList.toggle('ativa', a.dataset.aba === v));
+  if(v === 'lista') renderLista();
+  scrollTo(0,0);
+}
+
+function renderDoc(c, origem){
+  const {n, p, fs, t, fat, comps, S} = c;
+  const hoje = c.data.split('-').reverse().join('/');
+  $('#doc').innerHTML = `
+    <div class="doc-acoes">
+      ${origem === 'app'
+        ? `<button class="btn sec" data-aba="app"><iconify-icon icon="ph:pencil-simple"></iconify-icon>Editar cotação</button>`
+        : `<button class="btn sec" data-aba="lista"><iconify-icon icon="ph:arrow-left"></iconify-icon>Voltar às cotações</button>`}
+      <button class="btn pri" onclick="window.print()"><iconify-icon icon="ph:printer"></iconify-icon>Imprimir / Salvar PDF</button>
+    </div>
+    <article class="doc">
+      <div class="doc-top"><div><h2>Cotação ${n}</h2><div class="emit">Emitida em ${hoje}</div></div>
+        <div style="text-align:right;font-size:13px"><strong>Indústria Exemplo Ltda</strong><br>CNPJ 00.000.000/0001-91<br>Rua Exemplo, 100 · Cidade Modelo</div></div>
+      <h4>Dados da cotação</h4>
+      <div class="dados">
+        <div><span>Empresa</span>${S.cliente}</div><div><span>Contato</span>${S.contato}</div>
+        <div><span>E-mail</span>${S.email}</div><div><span>Telefone</span>${S.tel}</div>
+        <div><span>CNPJ / CPF</span>${S.doc}</div><div><span>Vendedor</span>Ana Souza</div>
+        <div><span>Prazo de produção</span>${S.prazo}</div><div><span>Prazo de pagamento</span>${fat.nome}</div>
+        <div><span>Forma de pagamento</span>${S.pagamento}</div>
+        <div><span>Valor total</span>${t!==null?brl(t):'Ver comparativo abaixo'}</div>
+      </div>
+      ${S.obs?`<h4>Observações</h4><p style="margin:0;font-size:14px">${S.obs.replace(/</g,'&lt;')}</p>`:''}
+      <h4>Produto</h4>
+      <p style="margin:0 0 4px;font-weight:700">${p.nome}</p>
+      <p style="margin:0 0 12px;font-size:14px;color:var(--texto)">${comps.length?comps.join(' · '):'Sem acabamentos ou acessórios'}</p>
+      <table><thead><tr><th>Quantidade</th>${p.base==='metro'?'<th>Comprimento</th>':''}<th class="n">Valor unitário</th><th class="n">Valor total</th></tr></thead>
+        <tbody>${fs.map(f => `<tr><td>${f.qtd.toLocaleString('pt-BR')} un</td>${p.base==='metro'?`<td>${f.comp} cm</td>`:''}<td class="n">${brl(f.unitCliente)}</td><td class="n">${brl(f.total)}</td></tr>`).join('')}</tbody></table>
+      ${num(S.frete)&&S.mostraFrete?`<div class="rs-row" style="margin-top:10px;font-size:14px"><span>Frete</span><span>${brl(num(S.frete))}</span></div>`:''}
+      ${t!==null?`<div class="doc-total"><span>Valor total geral</span><strong>${brl(S.mostraFrete?t:t-num(S.frete))}</strong></div>`:''}
+      <div class="doc-rodape">Cotação válida por 15 dias. Documento de demonstração, gerado com dados fictícios.</div>
+    </article>`;
+  mostrar('doc');
+}
+
+/* ── Eventos ─────────────────────────────────────────────────────── */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.dataset.prod){ S.produto = t.dataset.prod; S.linhas = [{qtd:'',comp:''}]; S.acab = []; S.fecho = ''; S.acs = []; render(); }
+  else if(t.dataset.ir){ S.passo = +t.dataset.ir; render(); }
+  else if(t.dataset.rm){ S.linhas.splice(+t.dataset.rm,1); render(); }
+  else if(t.id === 'mais'){ S.linhas.push({qtd:'',comp:S.linhas[0].comp}); render(); }
+  else if(t.id === 'voltar'){ S.passo--; render(); }
+  else if(t.id === 'avancar'){ if(S.passo === ETAPAS.length-1) emitir(); else { S.passo++; render(); scrollTo({top:0,behavior:'smooth'}); } }
+  else if(t.dataset.aba){ mostrar(t.dataset.aba); }
+  else if(t.dataset.ver){ renderDoc(todas().find(c => c.n === t.dataset.ver), 'lista'); }
+});
+['f-busca','f-status','f-ordem'].forEach(id => $('#'+id).addEventListener('input', renderLista));
+document.addEventListener('input', e => {
+  const el = e.target;
+  if(el.dataset.linha !== undefined){ S.linhas[+el.dataset.linha][el.dataset.k] = el.value; refrescar(el); }
+  else if(el.dataset.s){ S[el.dataset.s] = el.type === 'checkbox' ? el.checked : el.value; renderResumo(); }
+});
+document.addEventListener('change', e => {
+  const el = e.target;
+  if(el.dataset.grupo){ const arr = S[el.dataset.grupo]; el.checked ? arr.push(el.value) : arr.splice(arr.indexOf(el.value),1); renderResumo(); }
+  else if(el.id === 'fecho'){ S.fecho = el.value; renderResumo(); }
+});
+/* atualiza só o que depende da quantidade: o campo digitado nunca é recriado */
+function refrescar(el){
+  const i = el.dataset.linha;
+  document.querySelector(`[data-info="${i}"]`).innerHTML = infoFaixa(S.linhas[i]);
+  document.getElementById('avancar').disabled = !podeAvancar(S.passo);
+  renderEtapas(); renderResumo();
+}
+
+render();
+</script>
+</body>
+</html>
